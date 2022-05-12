@@ -8,8 +8,7 @@ components using provided and required interfaces and a data-oriented design.
 
 ### Classwork
 
-- Document the provided `IGamePluginService`, `IEntityProcessorService` and `IPostEntityProcessorService` interfaces
-  using JavaDoc. Consider the pre- and post-conditions for each method signature.
+- Document the provided `IGamePluginService`, `IEntityProcessorService` and `IPostEntityProcessorService` interfaces using JavaDoc. Consider the pre- and post-conditions for each method signature.
 
 - Implement the `Player` and `Enemy` as a separate project using the provided `IGamePluginService`,
   `IEntityProcessorService` and `IPostEntityProcessorService` interfaces. See provided example
