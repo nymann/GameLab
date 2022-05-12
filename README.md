@@ -1,3 +1,5 @@
+# GamesLab
+
 ### Objectives
 
 The objective is to implement a small component and data-oriented Asteroids game
