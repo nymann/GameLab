@@ -1,5 +1,7 @@
 # GamesLab
 
+![gamesLab](https://user-images.githubusercontent.com/7005867/168130957-9267c03f-e7ac-4b8e-9eaf-09940bd9a9e1.gif)
+
 ### Running the game
 
 ##### Via make target
