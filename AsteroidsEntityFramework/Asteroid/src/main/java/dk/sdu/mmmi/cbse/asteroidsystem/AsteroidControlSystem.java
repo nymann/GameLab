@@ -10,13 +10,13 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import java.util.Random;
 
 public class AsteroidControlSystem implements IEntityProcessingService {
-    private Random random = new Random();
+    private final Random random = new Random();
 
     @Override
     public void process(GameData gameData, World world) {
-        for (Entity enemy : world.getEntities(Asteroid.class)) {
-            PositionPart positionPart = enemy.getPart(PositionPart.class);
-            MovingPart movingPart = enemy.getPart(MovingPart.class);
+        for (Entity asteroid : world.getEntities(Asteroid.class)) {
+            PositionPart positionPart = asteroid.getPart(PositionPart.class);
+            MovingPart movingPart = asteroid.getPart(MovingPart.class);
 
 
             boolean goingLeft = random.nextBoolean();
@@ -24,10 +24,10 @@ public class AsteroidControlSystem implements IEntityProcessingService {
             movingPart.setRight(!goingLeft);
             movingPart.setUp(random.nextBoolean());
 
-            movingPart.process(gameData, enemy);
-            positionPart.process(gameData, enemy);
+            movingPart.process(gameData, asteroid);
+            positionPart.process(gameData, asteroid);
 
-            updateShape(enemy);
+            updateShape(asteroid);
         }
     }
 

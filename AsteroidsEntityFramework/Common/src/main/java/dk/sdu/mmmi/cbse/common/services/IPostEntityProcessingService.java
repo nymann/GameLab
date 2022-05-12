@@ -9,8 +9,13 @@ import dk.sdu.mmmi.cbse.common.data.World;
  */
 public interface IPostEntityProcessingService  {
         /**
-         * @param gameData
-         * @param world
+         * Post process relevant entities.
+         *
+         * @param gameData the not Null gameData
+         * @param world the not Null world
+         *
+         * Pre-condition: Called after IEntityProcessingService processing has run for all plugins.
+         * Post-condition: Entities might have been removed, or changed.
          */
         void process(GameData gameData, World world);
 }
