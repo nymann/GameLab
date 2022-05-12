@@ -17,14 +17,14 @@ public class LifeProcesser implements IPostEntityProcessingService {
     }
 
     private boolean isDead(LifePart lifePart) {
-        if(null == lifePart) {
+        if (null == lifePart) {
             return false;
         }
         return lifePart.getLife() <= 0;
     }
 
     private boolean isExpired(ExpirationPart expirationPart) {
-        if(null == expirationPart) {
+        if (null == expirationPart) {
             return false;
         }
 

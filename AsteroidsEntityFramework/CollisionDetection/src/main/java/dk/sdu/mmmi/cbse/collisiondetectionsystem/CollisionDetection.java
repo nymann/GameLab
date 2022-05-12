@@ -26,8 +26,8 @@ public class CollisionDetection implements IPostEntityProcessingService {
                 if (lifePart == null) {
                     world.removeEntity(a);
                 } else {
+                    lifePart.setAttacker(b);
                     lifePart.process(gameData, b);
-                    System.out.println(lifePart.getLife());
                 }
                 break;
             }

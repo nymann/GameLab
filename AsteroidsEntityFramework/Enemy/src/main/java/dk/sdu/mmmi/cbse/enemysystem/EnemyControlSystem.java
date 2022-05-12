@@ -1,5 +1,6 @@
 package dk.sdu.mmmi.cbse.enemysystem;
 
+import dk.sdu.mmmi.cbse.bulletsystem.BulletControlSystem;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
@@ -12,7 +13,7 @@ import java.util.Random;
 
 public class EnemyControlSystem implements IEntityProcessingService {
 
-    private Random random;
+    private final Random random;
 
     public EnemyControlSystem() {
         super();
@@ -22,7 +23,8 @@ public class EnemyControlSystem implements IEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
         List<Entity> enemies = world.getEntities(Enemy.class);
-        for (Entity enemy : enemies) {
+        for (Entity entity : enemies) {
+            Enemy enemy = (Enemy) entity;
             PositionPart positionPart = enemy.getPart(PositionPart.class);
             MovingPart movingPart = enemy.getPart(MovingPart.class);
             boolean goingLeft = random.nextBoolean();
@@ -32,6 +34,12 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
             movingPart.process(gameData, enemy);
             positionPart.process(gameData, enemy);
+
+            if (enemy.canShoot(gameData.getDelta())) {
+                Entity bullet = BulletControlSystem.shoot(enemy);
+                enemy.resetCooldown();
+                world.addEntity(bullet);
+            }
 
             updateShape(enemy);
         }
