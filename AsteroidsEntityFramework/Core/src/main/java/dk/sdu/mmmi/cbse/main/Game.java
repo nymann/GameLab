@@ -10,6 +10,8 @@ import dk.sdu.mmmi.cbse.asteroidsystem.AsteroidPlugin;
 import dk.sdu.mmmi.cbse.bulletsystem.BulletControlSystem;
 import dk.sdu.mmmi.cbse.bulletsystem.BulletPlugin;
 import dk.sdu.mmmi.cbse.collisiondetectionsystem.CollisionDetection;
+import dk.sdu.mmmi.cbse.common.IShapeRender;
+import dk.sdu.mmmi.cbse.common.MyShapeRender;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
@@ -17,11 +19,11 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.cbse.enemysystem.EnemyControlSystem;
+import dk.sdu.mmmi.cbse.enemysystem.EnemyPlugin;
 import dk.sdu.mmmi.cbse.lifeprocessersystem.LifeProcesser;
 import dk.sdu.mmmi.cbse.managers.GameInputProcessor;
 import dk.sdu.mmmi.cbse.playersystem.PlayerControlSystem;
 import dk.sdu.mmmi.cbse.playersystem.PlayerPlugin;
-import dk.sdu.mmmi.cbse.enemysystem.EnemyPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +31,8 @@ import java.util.List;
 public class Game implements ApplicationListener {
 
     private static OrthographicCamera cam;
-    private ShapeRenderer sr;
-
     private final GameData gameData = new GameData();
+    private IShapeRender sr;
     private List<IEntityProcessingService> entityProcessors = new ArrayList<>();
     private List<IPostEntityProcessingService> entityPostProcessors = new ArrayList<>();
     private List<IGamePluginService> entityPlugins = new ArrayList<>();
@@ -47,7 +48,7 @@ public class Game implements ApplicationListener {
         cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
         cam.update();
 
-        sr = new ShapeRenderer();
+        sr = new MyShapeRender(new ShapeRenderer());
 
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
 
@@ -101,26 +102,14 @@ public class Game implements ApplicationListener {
             entityProcessorService.process(gameData, world);
         }
 
-        for(IPostEntityProcessingService postEntityProcessingService : entityPostProcessors) {
+        for (IPostEntityProcessingService postEntityProcessingService : entityPostProcessors) {
             postEntityProcessingService.process(gameData, world);
         }
     }
 
     private void draw() {
         for (Entity entity : world.getEntities()) {
-
-            sr.setColor(1, 1, 1, 1);
-
-            sr.begin(ShapeRenderer.ShapeType.Line);
-
-            float[] shapex = entity.getShapeX();
-            float[] shapey = entity.getShapeY();
-
-            for (int i = 0, j = shapex.length - 1; i < shapex.length; j = i++) {
-                sr.line(shapex[i], shapey[i], shapex[j], shapey[j]);
-            }
-
-            sr.end();
+            entity.draw(sr);
         }
     }
 

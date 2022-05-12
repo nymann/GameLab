@@ -1,8 +1,9 @@
 package dk.sdu.mmmi.cbse.common.data;
 
+import dk.sdu.mmmi.cbse.common.IShapeRender;
+import dk.sdu.mmmi.cbse.common.ShapeType;
 import dk.sdu.mmmi.cbse.common.data.entityparts.EntityPart;
 
-import java.awt.*;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
@@ -12,7 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Entity implements Serializable {
     private final UUID ID = UUID.randomUUID();
-
+    protected String hexColor = "#FFFFFF";
+    protected ShapeType shapeType = ShapeType.LINE;
     private float[] shapeX = new float[4];
     private float[] shapeY = new float[4];
     private float radius;
@@ -24,18 +26,20 @@ public class Entity implements Serializable {
         this.shapeX = new float[vertices];
         this.shapeY = new float[vertices];
     }
+
     public Entity(int vertices) {
         this();
         this.shapeX = new float[vertices];
         this.shapeY = new float[vertices];
     }
+
     public Entity() {
         parts = new ConcurrentHashMap<>();
     }
 
     @Override
     public boolean equals(Object o) {
-        if(o == this) {
+        if (o == this) {
             return true;
         }
 
@@ -50,21 +54,21 @@ public class Entity implements Serializable {
     public void add(EntityPart part) {
         parts.put(part.getClass(), part);
     }
-    
+
     public void remove(Class partClass) {
         parts.remove(partClass);
     }
-    
+
     public <E extends EntityPart> E getPart(Class partClass) {
         return (E) parts.get(partClass);
     }
-    
-    public void setRadius(float r){
-        this.radius = r;
-    }
-    
-    public float getRadius(){
+
+    public float getRadius() {
         return radius;
+    }
+
+    public void setRadius(float r) {
+        this.radius = r;
     }
 
     public String getID() {
@@ -85,5 +89,25 @@ public class Entity implements Serializable {
 
     public void setShapeY(float[] shapeY) {
         this.shapeY = shapeY;
+    }
+
+    public EntityType getEntityType() {
+        return EntityType.UNKNOWN;
+    }
+
+    public void draw(IShapeRender sr) {
+        sr.setColor(this.hexColor);
+        sr.begin(this.shapeType);
+        this.drawMethod(sr);
+        sr.end();
+    }
+
+    protected void drawMethod(IShapeRender sr) {
+        float[] shapex = this.getShapeX();
+        float[] shapey = this.getShapeY();
+
+        for (int i = 0, j = shapex.length - 1; i < shapex.length; j = i++) {
+            sr.addLine(shapex[i], shapey[i], shapex[j], shapey[j]);
+        }
     }
 }
