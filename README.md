@@ -1,6 +1,6 @@
 # GamesLab
 
-![gamesLab](https://user-images.githubusercontent.com/7005867/168169943-3d5ce678-2ec0-4843-8a41-8e73a96c9232.gif)
+![cut](https://user-images.githubusercontent.com/7005867/168170246-a584b7e1-93bc-4291-808e-18f23e190236.gif)
 
 ### Running the game
 
