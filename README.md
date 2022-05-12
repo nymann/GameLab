@@ -1,4 +1,4 @@
-# GameLab
+# GamesLab
 
 ### Running the game
 
