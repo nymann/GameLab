@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import dk.sdu.mmmi.cbse.asteroidsplittingsystem.AsteroidSplitter;
 import dk.sdu.mmmi.cbse.asteroidsystem.AsteroidControlSystem;
 import dk.sdu.mmmi.cbse.asteroidsystem.AsteroidPlugin;
 import dk.sdu.mmmi.cbse.bulletsystem.BulletControlSystem;
@@ -30,13 +31,12 @@ import java.util.List;
 
 public class Game implements ApplicationListener {
 
-    private static OrthographicCamera cam;
     private final GameData gameData = new GameData();
+    private final List<IEntityProcessingService> entityProcessors = new ArrayList<>();
+    private final List<IPostEntityProcessingService> entityPostProcessors = new ArrayList<>();
+    private final List<IGamePluginService> entityPlugins = new ArrayList<>();
+    private final World world = new World();
     private IShapeRender sr;
-    private List<IEntityProcessingService> entityProcessors = new ArrayList<>();
-    private List<IPostEntityProcessingService> entityPostProcessors = new ArrayList<>();
-    private List<IGamePluginService> entityPlugins = new ArrayList<>();
-    private World world = new World();
 
     @Override
     public void create() {
@@ -44,37 +44,28 @@ public class Game implements ApplicationListener {
         gameData.setDisplayWidth(Gdx.graphics.getWidth());
         gameData.setDisplayHeight(Gdx.graphics.getHeight());
 
-        cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
-        cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
+        OrthographicCamera cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
+        cam.translate(gameData.getDisplayWidth() / 2f, gameData.getDisplayHeight() / 2f);
         cam.update();
 
         sr = new MyShapeRender(new ShapeRenderer());
 
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
 
-        IGamePluginService playerPlugin = new PlayerPlugin();
-        IGamePluginService enemyPlugin = new EnemyPlugin();
-        IGamePluginService asteroidPlugin = new AsteroidPlugin();
-        IGamePluginService bulletPlugin = new BulletPlugin();
-
-        IEntityProcessingService playerProcess = new PlayerControlSystem();
-        IEntityProcessingService enemyProcess = new EnemyControlSystem();
-        IEntityProcessingService asteroidProcess = new AsteroidControlSystem();
-        IEntityProcessingService bulletProcess = new BulletControlSystem();
-
         entityPostProcessors.add(new CollisionDetection());
         entityPostProcessors.add(new LifeProcesser());
+        entityPostProcessors.add(new AsteroidSplitter());
 
-        entityPlugins.add(playerPlugin);
-        entityPlugins.add(enemyPlugin);
-        entityPlugins.add(bulletPlugin);
-        entityPlugins.add(asteroidPlugin);
+        entityPlugins.add(new PlayerPlugin());
+        entityPlugins.add(new EnemyPlugin());
+        entityPlugins.add(new BulletPlugin());
+        entityPlugins.add(new AsteroidPlugin());
 
-        entityProcessors.add(playerProcess);
-        entityProcessors.add(bulletProcess);
-        entityProcessors.add(enemyProcess);
-        entityProcessors.add(asteroidProcess);
-        // Lookup all Game Plugins using ServiceLoader
+        entityProcessors.add(new PlayerControlSystem());
+        entityProcessors.add(new AsteroidControlSystem());
+        entityProcessors.add(new BulletControlSystem());
+        entityProcessors.add(new EnemyControlSystem());
+
         for (IGamePluginService iGamePlugin : entityPlugins) {
             iGamePlugin.start(gameData, world);
         }
@@ -82,8 +73,6 @@ public class Game implements ApplicationListener {
 
     @Override
     public void render() {
-
-        // clear screen to black
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -97,7 +86,6 @@ public class Game implements ApplicationListener {
     }
 
     private void update() {
-        // Update
         for (IEntityProcessingService entityProcessorService : entityProcessors) {
             entityProcessorService.process(gameData, world);
         }

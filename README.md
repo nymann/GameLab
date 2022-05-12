@@ -29,7 +29,7 @@ java -jar bin/GameLab.jar
   - Added a life-processer that removes dead entities from the game.
 - [x] Ships that collide with asteroids should be destroyed.
   - A player has 100 health, but 3 lives. They lose 100 health when colliding with an asteroid (so life becomes 2).
-- [ ] When fired upon Asteroids should split into two smaller Asteroids and when small enough they should be destroyed.
+- [x] When fired upon Asteroids should split into two smaller Asteroids and when small enough they should be destroyed.
 - [x] Last, the player ship and enemy-ships should be destroyed when hit by each others bullets a certain number of times.
 - [ ] Specify at contract level (operation contracts in unified process), the required and provided interfaces based on
       identified components. That is, specify pre and post-conditions for each operation of the component.

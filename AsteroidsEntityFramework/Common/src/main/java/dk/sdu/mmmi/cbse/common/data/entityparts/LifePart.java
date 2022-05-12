@@ -13,11 +13,14 @@ public class LifePart implements EntityPart {
 
     private int life;
     private int health;
+    private int maxHealth;
+    private boolean lostLife = false;
     private Entity attacker;
 
     public LifePart(int life, int health) {
         this.life = life;
         this.health = health;
+        this.maxHealth = health;
         this.attacker = null;
     }
 
@@ -25,17 +28,10 @@ public class LifePart implements EntityPart {
         return health;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
     public int getLife() {
         return life;
     }
 
-    public void setLife(int life) {
-        this.life = life;
-    }
 
     public void setAttacker(Entity attacker) {
         this.attacker = attacker;
@@ -43,14 +39,15 @@ public class LifePart implements EntityPart {
 
     @Override
     public void process(GameData gameData, Entity entity) {
-        if(this.attacker == null) {
+        if (this.attacker == null) {
             return;
         }
         this.health -= calculateDamageTaken(entity, this.attacker);
         this.attacker = null;
         if (this.health <= 0) {
             this.life--;
-            this.health = 100;
+            this.lostLife = true;
+            this.health = this.maxHealth;
         }
     }
 
@@ -68,5 +65,13 @@ public class LifePart implements EntityPart {
             default:
                 return 0;
         }
+    }
+
+    public boolean lostLifeLastCycle() {
+        return lostLife;
+    }
+
+    public void lostLifeProcessed() {
+        this.lostLife = false;
     }
 }
